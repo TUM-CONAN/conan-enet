@@ -37,4 +37,4 @@ class ENetConan(ConanFile):
         self.copy(pattern="*.dll", dst="bin", keep_path=False)
         
     def package_info(self):
-        self.cpp_info.libs = [v for v in tools.collect_libs(self) if "64" in v]
+        self.cpp_info.libs = tools.collect_libs(self)
