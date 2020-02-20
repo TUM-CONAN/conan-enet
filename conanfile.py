@@ -27,10 +27,10 @@ class ENetConan(ConanFile):
         cmake.build()
 
     def package(self):
-        self.copy(pattern="*.h", dst="include", src="include")
-        self.copy(pattern="*.so*", dst="lib", keep_path=False )
+        self.copy(pattern="*.h", dst="include", src=os.path.join("source_folder", "include"))
+        self.copy(pattern="*.so*", dst="lib", keep_path=False)
         self.copy(pattern="*.lib", dst="lib", keep_path=False)
         self.copy(pattern="*.dll", dst="bin", keep_path=False)
         
     def package_info(self):
-        self.cpp_info.libs = tools.collect_libs(self)
+        self.cpp_info.libs = [v for v in tools.collect_libs(self) if "64" in v]
