@@ -8,8 +8,8 @@ class ENetConan(ConanFile):
     generators = "cmake"
     settings = "os", "arch", "compiler", "build_type"
 
-    # options = {"shared": [True, False]}
-    # default_options = "shared=False"
+    options = {"shared": [True, False]}
+    default_options = "shared=True"
 
     license = "Copyright (c) 2002-2019 Lee Salzman"
     description = "A thin, simple and robust network communication layer on top of UDP (User Datagram Protocol)."
@@ -20,6 +20,10 @@ class ENetConan(ConanFile):
         tools.download("http://enet.bespin.org/download/%s" % fname, fname)
         tools.unzip(fname)
         shutil.move(basename, "source_folder")
+        tools.replace_in_file(os.path.join("source_folder", "CMakeLists.txt"), "add_library(enet STATIC", "add_library(enet")
+        os.remove(os.path.join("source_folder", "enet64.lib"))
+        os.remove(os.path.join("source_folder", "enet.lib"))
+
 
     def build(self):
         cmake = CMake(self)
