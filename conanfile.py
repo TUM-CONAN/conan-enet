@@ -1,32 +1,29 @@
 from conans import ConanFile, CMake, tools
 import os
-
+import shutil
 
 class ENetConan(ConanFile):
     name = "enet"
-    version = "0.1"
+    version = "1.3.14"
     generators = "cmake"
     settings = "os", "arch", "compiler", "build_type"
 
-    options = {"BUILD_SHARED_LIBS": [True, False]}
-    default_options = "BUILD_SHARED_LIBS=False"
-    exports_sources = "include*", "*.c", "CMakeLists.txt"
+    # options = {"shared": [True, False]}
+    # default_options = "shared=False"
 
-    exports = ["CMakeLists.txt"]
+    license = "Copyright (c) 2002-2019 Lee Salzman"
+    description = "A thin, simple and robust network communication layer on top of UDP (User Datagram Protocol)."
 
-    license="Copyright (c) 2002-2019 Lee Salzman"
-    description="A thin, simple and robust network communication layer on top of UDP (User Datagram Protocol)."
+    def source(self):
+        basename = "enet-%s" % self.version
+        fname = "%s.tar.gz" % basename
+        tools.download("http://enet.bespin.org/download/%s" % fname, fname)
+        tools.unzip(fname)
+        shutil.move(basename, "source_folder")
 
-    scm = {
-        "type": "git",
-        "url": "https://github.com/lsalzman/enet.git",
-        "revision": "master",
-    }
-    
     def build(self):
         cmake = CMake(self)
-        cmake.definitions["BUILD_SHARED_LIBS"] = self.options.BUILD_SHARED_LIBS
-        cmake.configure()
+        cmake.configure(source_folder="source_folder")
         cmake.build()
 
     def package(self):
